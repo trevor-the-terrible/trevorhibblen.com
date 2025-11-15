@@ -50,13 +50,11 @@ Required environment variables
   - AWS_SECRET_ACCESS_KEY
 
 ```bash
-npm run clearcache
+bun clearcache
 ```
 
 ## TODO
-- [ ] Add integration tests
 - [ ] Add a resume PDF/DOCX download
-- [ ] Add a feedback form
 - [ ] Add a 404 page
 - [ ] Add projects portfolio
 - [ ] Add a projects page
