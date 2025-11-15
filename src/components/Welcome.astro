@@ -1,0 +1,143 @@
+---
+import BgImg from './bg-img.astro';
+import Feedback from '@/components/feedback';
+import { Separator } from '@/components/ui/separator';
+import { HandIcon, WavesIcon, GlassWaterIcon, MessageCircleWarningIcon } from 'lucide-react';
+---
+<style>
+@keyframes wavyhand {
+  from {
+    transform: rotate(-8deg)
+  }
+  to {
+    transform: rotate(8deg)
+  }
+}
+.wavy-group:hover .wavy-hand {
+  animation:wavyhand 1s linear alternate-reverse infinite;
+}
+@keyframes wavy {
+  from {
+    stroke-dashoffset: -25;
+  }
+  to {
+    stroke-dashoffset: 25;
+  }
+}
+.wavy-group:hover .wavy {
+  stroke-dasharray: 25, 25;
+  color: cyan;
+  animation: wavy 3100ms linear reverse infinite;
+  filter: drop-shadow(0 4px 0px #502DA1cc);
+}
+.wavy-group:hover .wavy-hand {
+  color: coral;
+  filter: drop-shadow(0 4px 0px #502DA1cc);
+}
+</style>
+
+<div id="container"
+  class="
+    h-screen w-screen text-pretty subpixel-antialiased
+    dark:text-neutral-50
+  "
+>
+  <BgImg />
+
+  <main
+    class="h-full flex justify-center transition-opacity duration-1000 opacity-0"
+    data-fout-font="Satoshi"
+  >
+    <section
+      class="
+        flex flex-col items-center justify-evenly gap-2
+        px-0 sm:px-6
+        w-full h-full
+      "
+    >
+      <h1
+        data-test="title"
+        class="
+          title flex flex-col flex-wrap items-center justify-center gap-28
+          h-full w-full
+          text-[#502DA1] dark:text-stone-50
+        "
+        style="text-shadow: 1px 1px #000"
+      >
+        <span class="text-[4rem] sm:text-9xl font-bold text-center">
+          Hi.
+          <div
+            class="text-sm font-light text-center"
+            style="text-shadow: none;"
+          >
+            This is where I park my name.
+          </div>
+        </span>
+
+        <span
+          class="
+            group relative flex flex-row items-center justify-center gap-4
+            wavy-group
+          "
+        >
+          <HandIcon className="inline-block w-20 h-20 wavy-hand transition-all duration-700" />
+          <WavesIcon className="inline-block w-20 h-20 wavy transition-all duration-700" />
+          <div class="
+            absolute -bottom-12 left-1/2 transform -translate-x-1/2
+            italic text-sm  font-light
+            dark:bg-black/50 bg-[#502DA1] text-white
+            whitespace-nowrap pointer-events-none
+            px-2 py-1 rounded
+            opacity-0 group-hover:opacity-100
+            transition-opacity duration-300 delay-1000 ease-in-out
+            "
+          >
+            Hand + Wave...or smelly hands?
+          </div>
+        </span>
+      </h1>
+
+      <section class="
+        flex flex-col flex-wrap items-center justify-between gap-2 font-bold
+        h-32 pb-8
+      ">
+        <ul
+          data-test="navigation-links"
+          class="
+            flex flex-row flex-wrap items-center justify-center gap-4
+            text-[#502DA1] dark:text-white
+          "
+        >
+          <li class="list-none hover:underline">
+            <a
+              href="/experience"
+            >
+              Experience
+            </a>
+          </li>
+
+          <li
+            class="list-disc list-inside"
+          >
+            <a
+              class="hover:underline"
+              target="linkedin.com"
+              href="https://www.linkedin.com/in/trevor-hibblen-53b9b3a"
+            >
+              LinkedIn
+            </a>
+          </li>
+        </ul>
+
+        <!-- <hr class="w-full border-y-1 border-black dark:border-white" /> -->
+
+        <span
+          data-test="feedback"
+          class="hidden sm:flex!"
+        >
+          <Feedback client:idle />
+        </span>
+      </section>
+    </section>
+  </main>
+</div>

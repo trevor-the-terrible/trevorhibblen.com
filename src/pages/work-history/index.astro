@@ -1,0 +1,35 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const workHistory = await getCollection('workhistory');
+---
+
+<Layout>
+  <main
+    class="
+      prose dark:prose-invert
+      w-full h-full max-w-full max-h-full
+      fixed top-0 left-0 overflow-y-auto
+      subpixel-antialiased
+      p-12
+    "
+  >
+    <h1 class="text-4xl font-bold">Work History</h1>
+
+    {
+      workHistory
+        .sort((a, b) => b.data.sortOrder - a.data.sortOrder)
+        .map((entry) => (
+        <a
+          class="block p-4 hover:text-red-600 capitalize no-underline"
+          href={`/work-history/${entry.data.slug}`}
+        >
+          <h2
+            class="text-2xl font-bold hover:text-red-600"
+          >{entry.data.title} - Start Date: {entry.data.startDate}</h2>
+        </a>
+      ))
+    }
+  </main>
+</Layout>
