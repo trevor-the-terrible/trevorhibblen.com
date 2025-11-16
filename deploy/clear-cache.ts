@@ -4,6 +4,10 @@ import {
   CreateInvalidationCommand,
 } from '@aws-sdk/client-cloudfront';
 
+/**
+ * Invalidate the Cloudfront distribution cache after each deployment.
+ * > Ensures updates are fresh and ready to be re-cached.
+ */
 export const clearCache = async () => {
   const client = new CloudFrontClient();
   await client.send(new CreateInvalidationCommand({

@@ -1,21 +1,17 @@
 ---
-import lbg from '/src/assets/light3.gif';
-import dbg from '/src/assets/dark2.gif';
-// import dbg from '/src/assets/dark.gif';
+import lbg from "/src/assets/light.gif";
+import dbg from "/src/assets/dark.gif";
 ---
 
 <!-- light -->
-
 <img
   id="background"
   src={lbg.src}
-  class="
-    dark:hidden
+  class="dark:hidden
     blur-sm transition-all duration-300
     fixed top-0 left-0 z-[-1]
-    w-[100vw] h-[100vh]
-    transform-gpu scale-[25] object-none
-  "
+    w-screen h-screen
+    transform-gpu scale-[25] object-none"
   loading="eager"
 />
 
@@ -24,14 +20,12 @@ import dbg from '/src/assets/dark2.gif';
 <img
   id="backgroundd"
   src={dbg.src}
-  class="
-    hidden dark:block
+  class="hidden dark:block
     blur-sm transition-all duration-300
     fixed top-0 left-0 z-[-1]
-    w-[100vw] h-[100vh]
+    w-screen h-screen
     transform-gpu scale-[55]
     translate-y-[-150px]
-    translate-x-[600px]
-  "
+    translate-x-[600px]"
   loading="eager"
 />

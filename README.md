@@ -54,7 +54,5 @@ bun clearcache
 ```
 
 ## TODO
-- [ ] Add a resume PDF/DOCX download
-- [ ] Add a 404 page
 - [ ] Add projects portfolio
-- [ ] Add a projects page
+- [ ] Add a 404 page

@@ -1,10 +1,6 @@
 import util from 'node:util';
-import log from './debug';
 
-// const debug = util.debuglog('test');
-// debug('test');
-// debug('test:this');
-// debug('test:this:again', { test: 'test' });
+const log = util.debuglog('test');
 
 log('test', 'test');
 log('test', 'test:this');

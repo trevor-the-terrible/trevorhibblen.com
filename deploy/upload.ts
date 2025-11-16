@@ -4,6 +4,29 @@ import fsp from 'node:fs/promises';
 import { S3Client, type S3File } from 'bun';
 import mime from 'mime';
 
+export const upload = async () => {
+  const client = new S3Client({
+    bucket: process.env.SITE_BUCKET,
+  });
+  const files = await fetchFiles('./dist');
+
+  console.log('uploading files...', files.length);
+
+  await Promise.all((
+    files.map(async filepath => {
+      const s3File:S3File = client.file(filepath.replace(/^dist\//, ''));
+      const buffer = await fsp.readFile(filepath);
+      await s3File.write(buffer, {
+        type: mime.getType(path.extname(filepath)) ?? 'text/plain',
+      });
+    })
+  ));
+
+  await uploadVersionLog(client);
+
+  console.log('uploaded!');
+};
+
 const fetchFiles = async (dir: string) => {
   // eslint-disable-next-line security/detect-non-literal-fs-filename
   const list = await fsp.readdir(dir, {
@@ -28,30 +51,10 @@ const fetchFiles = async (dir: string) => {
   return files;
 };
 
-export const upload = async () => {
-  const client = new S3Client({
-    bucket: process.env.SITE_BUCKET,
-  });
-  const files = await fetchFiles('./dist');
-
-  console.log('uploading files...', files.length);
-
-  await Promise.all((
-    files.map(async filepath => {
-      const s3File:S3File = client.file(filepath.replace(/^dist\//, ''));
-      const buffer = await fsp.readFile(filepath);
-      await s3File.write(buffer, {
-        type: mime.getType(path.extname(filepath)) ?? 'text/plain',
-      });
-    })
-  ));
-
-  await applyVersion(client);
-
-  console.log('uploaded!');
-};
-
-const applyVersion = async (client: S3Client) => {
+/**
+ * Provide a way to verify host recently content was updated
+ */
+const uploadVersionLog = async (client: S3Client) => {
   const s3File: S3File = client.file("v")
   const buffer = Buffer.from((new Date().toString()));
   await s3File.write(buffer, {
