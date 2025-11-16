@@ -46,15 +46,25 @@ export const upload = async () => {
     })
   ));
 
+  await applyVersion(client);
+
   console.log('uploaded!');
 };
+
+const applyVersion = async (client: S3Client) => {
+  const s3File: S3File = client.file("v")
+  const buffer = Buffer.from((new Date().toString()));
+  await s3File.write(buffer, {
+    type: 'text/plain',
+  });
+}
 
 export default upload;
 
 (async () => {
-  console.log('!!process.env.ID :>> ', !!process.env.AWS_ACCESS_KEY_ID);
-  console.log('!!process.env.KEY :>> ', !!process.env.AWS_SECRET_ACCESS_KEY);
-  console.log('!!process.env.SITE_BUCKET :>> ', !!process.env.SITE_BUCKET);
+  console.log('AWS: KEY :>> ', process.env.AWS_ACCESS_KEY_ID ? '✅' : '🚫');
+  console.log('AWS: SECRET :>> ', process.env.AWS_SECRET_ACCESS_KEY ? '✅' : '🚫');
+  console.log('AWS: SITE_BUCKET :>> ', process.env.SITE_BUCKET ? '✅' : '🚫');
 
   if (
     !process.env.AWS_ACCESS_KEY_ID
