@@ -31,15 +31,15 @@ describe('Experience page', () => {
     cy.get('[data-test="xp-skills-table"]')
       .find('input[type="search"]')
       .type('react')
-      .wait(150);
-
-    cy.get('[data-test="xp-skills-table"]')
-      .find('table')
-      .should('contain', 'React')
-      .should('not.contain', 'Astro')
-      .should('not.contain', 'Tailwind')
-      .should('not.contain', 'Typescript')
-      .should('not.contain', 'Javascript');
+      .then(() => {
+        cy.get('[data-test="xp-skills-table"]')
+        .find('table')
+        .should('contain', 'React')
+        .should('not.contain', 'Astro')
+        .should('not.contain', 'Tailwind')
+        .should('not.contain', 'Typescript')
+        .should('not.contain', 'Javascript');
+      });
   });
 
   it('loads work history', () => {
