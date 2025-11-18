@@ -4,7 +4,7 @@ slug: kpa
 role: Staff Engineer
 company: KPA
 startDate: Mar 2017
-endDate: Present
+endDate: Nov 2025
 location: Remote
 sortOrder: 3
 ---

@@ -14,7 +14,7 @@ export default function TabWrapper({
   return (
     <Tabs
       defaultValue={defaultValue}
-      className="w-[400px]"
+      className="w-auto"
       onValueChange={val => onTabChange(val, group)}
     >
       <TabsList {...attrs}>

@@ -1,23 +1,42 @@
-import { useState } from "react"
-import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { skills, type Skill } from "./skills"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
-import BgNoise from "@/components/bg-noise"
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { skills, type Skill } from "./skills";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 
 export default WebDevSkillsTable;
 
 export function WebDevSkillsTable() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [categoryFilter, setCategoryFilter] = useState("All")
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("All");
 
-  const categories = ["All", ...new Set(skills.map(skill => skill.category))]
+  const categories = ["All", ...new Set(skills.map((skill) => skill.category))];
 
-  const filteredSkills = skills.filter(skill =>
-    skill.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (categoryFilter === "All" || skill.category === categoryFilter)
-  )
+  const filteredSkills = skills.filter(
+    (skill) =>
+      skill.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (categoryFilter === "All" || skill.category === categoryFilter)
+  );
 
   return (
     <Card
@@ -27,9 +46,7 @@ export function WebDevSkillsTable() {
       "
     >
       <CardHeader>
-        <CardTitle>
-          Skills
-        </CardTitle>
+        <CardTitle>Skills</CardTitle>
       </CardHeader>
 
       <CardContent className="flex flex-col sm:flex-row gap-0 sm:gap-4">
@@ -42,16 +59,13 @@ export function WebDevSkillsTable() {
           className="sm:w-1/2 mb-4"
         />
 
-        <Select
-          value={categoryFilter}
-          onValueChange={setCategoryFilter}
-        >
+        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
           <SelectTrigger className="sm:w-1/2">
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
 
           <SelectContent>
-            {categories.map(category => (
+            {categories.map((category) => (
               <SelectItem key={category} value={category}>
                 {category}
               </SelectItem>
@@ -61,11 +75,13 @@ export function WebDevSkillsTable() {
       </CardContent>
 
       <CardContent className="">
-        <Table>
+        <Table className='table table-fixed'>
           <TableHeader>
             <TableRow>
               <TableHead className="font-bold">Skill</TableHead>
-              <TableHead className="font-bold">Category</TableHead>
+              <TableHead className="font-bold hidden md:table-column">
+                Category
+              </TableHead>
               <TableHead className="font-bold">Level</TableHead>
             </TableRow>
           </TableHeader>
@@ -84,7 +100,9 @@ export function WebDevSkillsTable() {
                     </span>
                   )}
                 </TableCell>
-                <TableCell>{skill.category}</TableCell>
+                <TableCell className="hidden md:table-column">
+                  {skill.category}
+                </TableCell>
                 <TableCell>{skill.level}</TableCell>
               </TableRow>
             ))}
@@ -92,5 +110,5 @@ export function WebDevSkillsTable() {
         </Table>
       </CardContent>
     </Card>
-  )
+  );
 }

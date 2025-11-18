@@ -19,7 +19,7 @@
     "astro:disable:tb": "astro preferences disable devToolbar",
     "build": "astro build",
     "prepub": "bun run build",
-    "postpub": "bun run clearcache",
+    "postpub": "bun run clearcache; echo 'Done'",
     "clearcache": "bun deploy/clear-cache.ts",
     "upload": "bun deploy/upload.ts"
   },

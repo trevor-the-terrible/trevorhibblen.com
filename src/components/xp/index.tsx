@@ -21,7 +21,7 @@ export function Xp() {
           className="prose dark:prose-invert"
         >
           <p>
-            A lifelong "full stack" developer. I’m happiest when I can fill a gap on a team or resolving ongoing problems within a system. Lately, that’s meant my focus has been server-side with an emphasis on Postgres optimizations. But I’ve been exploring a lot of React in my free time this year.
+          As a full-stack staff engineer, I’m often filling a gap on a team, developing new internal tools or identifying upcoming challenges. Lately, it’s meant growing a team of new engineers, and focussing server-side on scaling through database/infrastructure redesigns and code refactors.
           </p>
 
           <h4>About this site</h4>

@@ -1,12 +1,20 @@
 ---
-import { getCollection } from 'astro:content';
-import Layout from '../layouts/Layout.astro';
-import WebDevSkillsTable from '@/components/web-dev-skills-table';
-import TabWrapper from '@/components/tab-wrapper';
-import { Xp } from '@/components/xp';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import BgNoise from '@/components/bg-noise';
-const workHistory = await getCollection('workhistory');
+import { getCollection } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import WebDevSkillsTable from "@/components/web-dev-skills-table";
+import TabWrapper from "@/components/tab-wrapper";
+import { Xp } from "@/components/xp";
+import { DownloadIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
+import BgNoise from "@/components/bg-noise";
+const workHistory = await getCollection("workhistory");
 ---
 
 <Layout>
@@ -18,52 +26,56 @@ const workHistory = await getCollection('workhistory');
     `
     data-fout-font="IBM Plex Mono"
   >
-    <TabWrapper
-      client:load
-      tabs={[
-        { id: 'xp', label: 'Experience' },
-        { id: 'history', label: 'Work History' },
-      ]}
-      defaultValue="xp"
-      group="tab-content"
-    />
+    <section class="flex flex-row justify-start gap-6">
+      <TabWrapper
+        client:load
+        tabs={[
+          { id: "xp", label: "Experience" },
+          { id: "history", label: "Work History" },
+        ]}
+        defaultValue="xp"
+        group="tab-content"
+      />
 
-    <article
-      id="xp"
-      class="tab-content"
-    >
+      <a
+        target="https://www.dropbox.com"
+        href="https://www.dropbox.com/scl/fo/qdp5alg4ygeaxj06hg2rq/AE9mdM5zQyBoFhEPzv-k_wU?rlkey=smxs59w356jn5wnp3hbkgs4yj&dl=0"
+      >
+        <Button
+          variant="neutral"
+        >
+          PDF
+
+          <DownloadIcon />
+        </Button>
+      </a>
+    </section>
+
+    <article id="xp" class="tab-content">
       <Xp />
 
       <section data-test="xp-skills-table">
         <p class="italic text-xs p-2 mb-2 rounded">
-          <b>Note:</b> I use a <b>*</b> to indicate areas I use personally, but not professionally.
+          <b>Note:</b> I use a <b>*</b> to indicate areas I use personally, but not
+          professionally.
         </p>
 
         <WebDevSkillsTable client:load />
       </section>
     </article>
 
-    <article
-      id="history"
-      class="hidden tab-content"
-    >
-      <section
-        class="
-          text-pretty subpixel-antialiased
-          my-6
-        "
-      >
+    <article id="history" class="hidden tab-content">
+      <section class="text-pretty subpixel-antialiased
+          my-6">
         <h2>Work History</h2>
         <TabWrapper
           client:load
-          tabs={
-            workHistory
-              .sort((a, b) => b.data.sortOrder - a.data.sortOrder)
-              .map(h => ({
-                id: h.data.slug,
-                label: h.data.title
-              }))
-          }
+          tabs={workHistory
+            .sort((a, b) => b.data.sortOrder - a.data.sortOrder)
+            .map((h) => ({
+              id: h.data.slug,
+              label: h.data.title,
+            }))}
           defaultValue="kpa"
           group="tab-content-wh"
         />
@@ -74,7 +86,7 @@ const workHistory = await getCollection('workhistory');
               id={entry.data.slug}
               className={`
                 tab-content-wh
-                ${entry.data.slug !== 'kpa' ? 'hidden' : ''}
+                ${entry.data.slug !== "kpa" ? "hidden" : ""}
                 mt-2
                 relative z-10
               `}
@@ -82,13 +94,15 @@ const workHistory = await getCollection('workhistory');
               <CardHeader className="mb-4">
                 <CardTitle>{entry.data.title}</CardTitle>
                 <CardDescription>{entry.data.location}</CardDescription>
-                <CardDescription>{entry.data.startDate} - {entry.data.endDate}</CardDescription>
+                <CardDescription>
+                  {entry.data.startDate} - {entry.data.endDate}
+                </CardDescription>
                 <CardDescription>{entry.data.role}</CardDescription>
               </CardHeader>
 
               <CardContent
                 className="prose dark:prose-invert"
-                set:html={entry?.rendered?.html || '-'}
+                set:html={entry?.rendered?.html || "-"}
               />
             </Card>
           ))
