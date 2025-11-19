@@ -56,7 +56,7 @@ export function WebDevSkillsTable() {
           placeholder="Filter skills..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="sm:w-1/2 mb-4"
+          className="sm:w-1/2 mb-4 dark:bg-black"
         />
 
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
