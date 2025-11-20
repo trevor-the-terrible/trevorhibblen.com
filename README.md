@@ -54,5 +54,6 @@ bun clearcache
 ```
 
 ## TODO
+- [ ] Automate deployment via github
 - [ ] Add projects portfolio
 - [ ] Add a 404 page
