@@ -4,7 +4,7 @@ import Layout from "../layouts/Layout.astro";
 import WebDevSkillsTable from "@/components/web-dev-skills-table";
 import TabWrapper from "@/components/tab-wrapper";
 import { Xp } from "@/components/xp";
-import { DownloadIcon } from "lucide-react";
+import { DownloadIcon, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,7 +13,6 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import BgNoise from "@/components/bg-noise";
 const workHistory = await getCollection("workhistory");
 ---
 
@@ -26,7 +25,7 @@ const workHistory = await getCollection("workhistory");
     `
     data-fout-font=""
   >
-    <section class="flex flex-row justify-start gap-6">
+    <section class="flex flex-row justify-start gap-6 relative">
       <TabWrapper
         client:load
         tabs={[
@@ -47,6 +46,18 @@ const workHistory = await getCollection("workhistory");
           PDF
 
           <DownloadIcon />
+        </Button>
+      </a>
+
+      <a
+        target="trevorhibblen.com"
+        href="https://trevorhibblen.com"
+        class="absolute right-1"
+      >
+        <Button
+          variant="neutral"
+        >
+          <Home />
         </Button>
       </a>
     </section>
