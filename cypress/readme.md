@@ -5,6 +5,9 @@
 bun cy:test
 ```
 
+### Tests
+Path: `cypress / e2e / trevorhibblen.com`
+
 ### Default examples
 NOTE: Keeping the default examples around for reference
 - cypress

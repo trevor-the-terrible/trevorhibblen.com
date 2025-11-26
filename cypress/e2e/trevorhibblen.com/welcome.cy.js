@@ -11,11 +11,17 @@ describe('Welcome page', () => {
   it('has navigation links', () => {
     cy.get('[data-test="navigation-links"]').should('exist');
     cy.get('[data-test="navigation-links"] a:first')
+    .should('be.visible')
       .should('contain', 'Experience')
       .should('have.attr', 'href', '/experience');
     cy.get('[data-test="navigation-links"] a:last')
+      .should('be.visible')
       .should('contain', 'LinkedIn')
       .should('have.attr', 'href', 'https://www.linkedin.com/in/trevor-hibblen-53b9b3a');
+    cy.get('[data-test="navigation-links"] [data-site=gh]')
+      .should('be.visible')
+      .should('contain', 'GitHub')
+      .should('have.attr', 'href', 'https://github.com/trevor-the-terrible/trevorhibblen.com');
   });
 
   it('is responsive', () => {
