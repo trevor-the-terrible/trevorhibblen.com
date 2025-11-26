@@ -1,35 +1,28 @@
 # trevorhibblen.com
 
-## Install
-```bash
-bun ci
+## Install & Run local
+> npm/pnpm can install and run the project.
+```sh
+npm ci; # pnpm run ci
+npm run dev; # pnpm dev
 ```
 
-## Run local
-```bash
-bun dev
-```
+> [Bun](https://bun.com/) is required to run tests and all other scripts
 
 ## Tests
-> Builds the production version of the site, but doesn't upload it to S3 or clear the CloudFront cache
-```bash
-bun test
-```
-
-## E2E Tests
-> Builds the production version of the site, but doesn't upload it to S3 or clear the CloudFront cache
-```bash
-bun cy:test
+```sh
+bun test;
+bun cy:test;
 ```
 
 ## Preview build
-> Builds the production version of the site, but doesn't upload it to S3 or clear the CloudFront cache
-```bash
-bun preview
+> Preview production version of site
+```sh
+bun preview;
 ```
 
 ## Deploy
-> Builds the production version of the site, uploads it to S3 and clears the CloudFront cache
+> Builds the production version, uploads it to S3 and clears the CloudFront cache
 
 Required environment variables
   - SITE_BUCKET
@@ -38,19 +31,7 @@ Required environment variables
   - AWS_SECRET_ACCESS_KEY
 
 ```bash
-bun pub
-```
-
-## clear CloudFront cache, otherwise  you probably won't see the changes
-> This is automatically run during deploy
-
-Required environment variables
-  - SITE_CLOUDFRONT_DISTRIBUTION_ID
-  - AWS_ACCESS_KEY_ID
-  - AWS_SECRET_ACCESS_KEY
-
-```bash
-bun clearcache
+bun pub;
 ```
 
 ## TODO
