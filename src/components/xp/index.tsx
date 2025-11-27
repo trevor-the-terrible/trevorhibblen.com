@@ -21,7 +21,7 @@ export function Xp() {
           className="prose dark:prose-invert"
         >
           <p>
-          As a full-stack staff engineer, I’m often filling a gap on a team, developing new internal tools or identifying upcoming challenges. Lately, it’s meant growing a team of new engineers, and focussing server-side on scaling through database/infrastructure redesigns and code refactors.
+          15+ years as a full-stack engineer. I believe in putting good fundamentals first, understanding the customer and product, and the value in being kind to those around you. I’m most comfortable in fast-paced environments and good taking on multiple roles. I’ve most recently been filling technical gaps on feature teams, mentoring new developers, and developing new tooling and infrastructure geared to improve our long-term scalability.
           </p>
 
           <h4>About this site</h4>

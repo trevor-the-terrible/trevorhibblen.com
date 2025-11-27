@@ -19,7 +19,7 @@ export const skills: Skill[] = [
     level: "7+ years",
     sort: 1,
   },
-  { name: "React", category: "Frontend", level: "~2 years", sort: 1 },
+  { name: "React", category: "Frontend", level: "~3 years", sort: 1 },
   {
     name: "PostgresSQL",
     category: "Database",
