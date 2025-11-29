@@ -1,5 +1,5 @@
 import {test, expect} from "bun:test";
-import { handler, verifySignature, verifyRecaptcha } from './lambda.mjs';
+import { handler, verifySignature } from './lambda.mjs';
 import signString from './sign-string';
 
 test('happy', async () => {

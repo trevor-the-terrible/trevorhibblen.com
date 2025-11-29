@@ -18,23 +18,7 @@ const workhistory = defineCollection({
   }),
 });
 
-const projects = defineCollection({
-  loader: glob({
-    pattern: '**/*.md',
-    base: './src/data/projects',
-  }),
-  schema: z.object({
-    title: z.string(),
-    slug: z.string(),
-    year: z.number(),
-    company: z.string(),
-    summary: z.string(),
-  }),
-});
-
-
 // 4. Export a single `collections` object to register your collection(s)
 export const collections = {
   workhistory,
-  projects,
 };

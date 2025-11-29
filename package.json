@@ -9,7 +9,7 @@
     "cy:test": "bun run preview & bun run e2e",
     "pub": "bun run upload",
     "db:latest": "bun spike/database.ts",
-    "e2e": "cypress run --spec 'cypress/e2e/trevorhibblen.com' --browser electron",
+    "e2e": "cypress run",
     "cy:open": "cypress open",
     "postcy:test": "bun run kill-http-server",
     "kill-http-server": "bun src/lib/kill-http-server.ts",

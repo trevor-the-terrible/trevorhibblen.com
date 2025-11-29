@@ -2,7 +2,6 @@
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogHeader, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import FeedbackForm from './form';
-import BgNoise from '../bg-noise';
 
 export default () => {
   const [status, setStatus] = useState<'open' | 'closed'>('closed');
