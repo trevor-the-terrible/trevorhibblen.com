@@ -11,19 +11,19 @@ sortOrder: 2
 
 ## Summary
 
-Primary focus was porting an existing .Net system to Node.JS. This included ongoing support and new features for the existing .Net system. My biggest accomplishments here were resolving an ongoing performance problem and automating internal services for faster deployment and self-healing.
+Primary focus was porting an existing .Net system to Node. This included ongoing support and new features for the existing .Net system. My biggest accomplishments here were resolving an ongoing performance problem and automating internal services for faster deployment and self-healing.
 
 ## Responsibilities:
 
-- Ported C# services and infrastructure to Node.JS.
+- Ported C# services and infrastructure to Node.
 - Supported C# infrastructure in .Net WinForms and .Net Web API.
-- Supported Node.JS applications for both client facing and internal administrative tools.
+- Supported Node micro-services for both client facing and internal administrative tools.
 - Helped to address load performance issues and retooled backend services for improved automation and recovery.
 
 ## Principle technologies
 
   - C#
-  - Node.JS
+  - Node
   - Express
   - Bootstrap
   - Angular 1

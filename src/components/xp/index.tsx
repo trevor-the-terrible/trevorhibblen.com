@@ -21,7 +21,10 @@ export function Xp() {
           className="prose dark:prose-invert"
         >
           <p>
-          15+ years as a full-stack engineer. I believe in putting good fundamentals first, understanding the customer and product, and the value in being kind to those around you. I’m most comfortable in fast-paced environments and good taking on multiple roles. I’ve most recently been filling technical gaps on feature teams, mentoring new developers, and developing new tooling and infrastructure geared to improve our long-term scalability.
+          An experienced full-stack developer. I’ve successfully managed and developed complete platforms and feature-sets from zero to production
+across a range of technologies. I value good design fundamentals, understanding the customer and product, and being an uplifting force to
+those around me. Quite comfortable in fast-paced environments and good taking on multiple roles, from gathering requirements, all aspects of
+design and development, to addressing stakeholder feedback and customer support. Also, kinda fun to work with 🎉
           </p>
 
           <h4>About this site</h4>
