@@ -1,0 +1,75 @@
+name: Build, Test and Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - feat-github-actions
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+    environment: Production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+        # Cypress is looking for this file? possibly the lock file reference?
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Unit Tests
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SITE_BUCKET: ${{ secrets.SITE_BUCKET }}
+        run: bun test --only-failures
+
+      # run as background script (need killall bun at the end?)
+      - name: Build & Start Preview
+        run: bun preview &
+
+      - name: Cypress
+        uses: cypress-io/github-action@v6
+        with:
+          config-file: cypress.config.mjs
+          wait-on: http://localhost:4321
+
+      - name: Upload Cypress Screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore
+
+      - name: Deploy to S3
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SITE_BUCKET: ${{ secrets.SITE_BUCKET }}
+        run: bun deploy/upload.ts
+
+      - name: Clear cache
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SITE_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.SITE_CLOUDFRONT_DISTRIBUTION_ID }}
+        run: bun deploy/clear-cache.ts
