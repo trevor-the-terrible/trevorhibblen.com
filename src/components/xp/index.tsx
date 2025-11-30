@@ -5,7 +5,6 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import BgNoise from "@/components/bg-noise";
 
 export function Xp() {
   return (

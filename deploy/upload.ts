@@ -68,6 +68,7 @@ export default upload;
   console.log('AWS: KEY :>> ', process.env.AWS_ACCESS_KEY_ID ? '✅' : '🚫');
   console.log('AWS: SECRET :>> ', process.env.AWS_SECRET_ACCESS_KEY ? '✅' : '🚫');
   console.log('AWS: SITE_BUCKET :>> ', process.env.SITE_BUCKET ? '✅' : '🚫');
+  console.log('AWS: REGION :>> ', process.env.AWS_REGION ? '✅' : '🚫');
 
   if (
     !process.env.AWS_ACCESS_KEY_ID
