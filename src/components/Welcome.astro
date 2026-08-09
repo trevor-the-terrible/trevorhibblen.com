@@ -1,123 +1,93 @@
 ---
-import BgImg from './bg-img.astro';
-import Feedback from '@/components/feedback';
-import { HandIcon, WavesIcon, GlassWaterIcon, MessageCircleWarningIcon } from 'lucide-react';
+import BgImg from "./bg-img.astro";
+import Feedback from "@/components/feedback";
+import { HandIcon, WavesIcon, GlassWaterIcon, MessageCircleWarningIcon } from "lucide-react";
 ---
+
 <style>
-@keyframes wavyhand {
-  from {
-    transform: rotate(-8deg)
+  @keyframes wavyhand {
+    from {
+      transform: rotate(-8deg);
+    }
+    to {
+      transform: rotate(8deg);
+    }
   }
-  to {
-    transform: rotate(8deg)
+  .wavy-group:hover .wavy-hand {
+    animation: wavyhand 1s linear alternate-reverse infinite;
   }
-}
-.wavy-group:hover .wavy-hand {
-  animation:wavyhand 1s linear alternate-reverse infinite;
-}
-@keyframes wavy {
-  from {
-    stroke-dashoffset: -25;
+  @keyframes wavy {
+    from {
+      stroke-dashoffset: -25;
+    }
+    to {
+      stroke-dashoffset: 25;
+    }
   }
-  to {
-    stroke-dashoffset: 25;
+  .wavy-group:hover .wavy {
+    stroke-dasharray: 25, 25;
+    color: cyan;
+    animation: wavy 3100ms linear reverse infinite;
+    filter: drop-shadow(0 4px 0px #502da1cc);
   }
-}
-.wavy-group:hover .wavy {
-  stroke-dasharray: 25, 25;
-  color: cyan;
-  animation: wavy 3100ms linear reverse infinite;
-  filter: drop-shadow(0 4px 0px #502DA1cc);
-}
-.wavy-group:hover .wavy-hand {
-  color: coral;
-  filter: drop-shadow(0 4px 0px #502DA1cc);
-}
+  .wavy-group:hover .wavy-hand {
+    color: coral;
+    filter: drop-shadow(0 4px 0px #502da1cc);
+  }
 </style>
 
-<div id="container"
-  class="
-    h-screen w-screen text-pretty subpixel-antialiased
-    dark:text-neutral-50
-  "
->
+<div id="container" class="h-screen w-screen text-pretty subpixel-antialiased
+    dark:text-neutral-50">
   <BgImg />
 
-  <main
-    class="h-full flex justify-center transition-opacity duration-1000 opacity-0"
-    data-fout-font="Title"
-  >
-    <section
-      class="
-        flex flex-col items-center justify-evenly gap-2
+  <main class="h-full flex justify-center transition-opacity duration-1000 opacity-0" data-fout-font="Title">
+    <section class="flex flex-col items-center justify-evenly gap-2
         px-0 sm:px-6
-        w-full h-full
-      "
-    >
-      <h1
-        data-test="title"
-        class="
-          title flex flex-col flex-wrap items-center justify-center gap-28
-          h-full w-full
-          text-[#502DA1] dark:text-stone-50
-        "
-        style="text-shadow: 1px 1px #000"
-      >
-        <span class="text-[4rem] sm:text-9xl font-bold text-center">
-          Hi.
-          <div
-            class="text-sm font-light text-center"
-            style="text-shadow: none;"
-          >
-            This is where I park my name.
-          </div>
-        </span>
-
-        <span
-          class="
-            group relative flex flex-row items-center justify-center gap-4
-            wavy-group
-          "
+        w-full h-full">
+      <div class="rounded-md py-8 px-32 bg-white/20 dark:bg-black/20 shadow-2xl">
+        <h1
+          data-test="title"
+          class="title flex flex-col flex-wrap items-center justify-center gap-28
+            h-full w-full
+            text-[#502DA1] dark:text-stone-50"
+          style="text-shadow: 1px 1px #000"
         >
-          <HandIcon className="inline-block w-20 h-20 wavy-hand transition-all duration-700" />
-          <WavesIcon className="inline-block w-20 h-20 wavy transition-all duration-700" />
-          <div class="
-            absolute -bottom-12 left-1/2 transform -translate-x-1/2
-            italic text-sm  font-light
-            dark:bg-black/50 bg-[#502DA1] text-white
-            whitespace-nowrap pointer-events-none
-            px-2 py-1 rounded
-            opacity-0 group-hover:opacity-100
-            transition-opacity duration-300 delay-1000 ease-in-out
-            "
-          >
-            Hand + Wave...or smelly hands?
-          </div>
-        </span>
-      </h1>
+          <span class="text-[4rem] sm:text-9xl font-bold text-center">
+            Hi.
+            <div class="text-sm font-light text-center" style="text-shadow: none;">This is where I park my name.</div>
+          </span>
 
-      <section class="
-        flex flex-col flex-wrap items-center justify-between gap-2 font-bold
-        h-32 pb-8
-      ">
+          <span class="group relative flex flex-row items-center justify-center gap-4
+              wavy-group">
+            <HandIcon className="inline-block w-20 h-20 wavy-hand transition-all duration-700" />
+            <WavesIcon className="inline-block w-20 h-20 wavy transition-all duration-700" />
+            <div
+              class="absolute -top-12 left-1/2 transform -translate-x-1/2
+              italic text-sm font-light
+              dark:bg-black/50 bg-[#502DA1] text-white
+              whitespace-nowrap pointer-events-none
+              px-2 py-1 rounded
+              opacity-0 group-hover:opacity-100
+              transition-opacity duration-300 delay-1000 ease-in-out"
+            >
+              Hand + Wave...or smelly hands?
+            </div>
+          </span>
+        </h1>
+      </div>
+
+      <section class="flex flex-col items-center justify-between gap-6 font-bold
+        h-32 pb-8">
         <ul
           data-test="navigation-links"
-          class="
-            flex flex-row flex-wrap items-center justify-center gap-4
-            text-[#502DA1] dark:text-white
-          "
+          class="flex flex-row flex-wrap items-center justify-center gap-4
+            text-[#502DA1] dark:text-white rounded-md py-8 px-32 bg-white/20 dark:bg-black/20 shadow-2xl"
         >
           <li class="list-none hover:underline">
-            <a
-              href="/experience"
-            >
-              Experience
-            </a>
+            <a href="/experience"> Experience </a>
           </li>
 
-          <li
-            class="list-disc list-inside"
-          >
+          <li class="list-disc list-inside">
             <a
               class="hover:underline"
               target="github.com"
@@ -128,25 +98,16 @@ import { HandIcon, WavesIcon, GlassWaterIcon, MessageCircleWarningIcon } from 'l
             </a>
           </li>
 
-          <li
-            class="list-disc list-inside"
-          >
-            <a
-              class="hover:underline"
-              target="linkedin.com"
-              href="https://www.linkedin.com/in/trevor-hibblen-53b9b3a"
-            >
+          <li class="list-disc list-inside">
+            <a class="hover:underline" target="linkedin.com" href="https://www.linkedin.com/in/trevor-hibblen-53b9b3a">
               LinkedIn
             </a>
           </li>
         </ul>
 
-        <span
-          data-test="feedback"
-          class="hidden sm:flex!"
-        >
+        <div data-test="feedback" class="hidden sm:flex!">
           <Feedback client:idle />
-        </span>
+        </div>
       </section>
     </section>
   </main>
