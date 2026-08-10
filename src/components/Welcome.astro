@@ -1,7 +1,7 @@
 ---
 import BgImg from "./bg-img.astro";
 import Feedback from "@/components/feedback";
-import { HandIcon, WavesIcon, GlassWaterIcon, MessageCircleWarningIcon } from "lucide-react";
+import { HandIcon, WavesIcon } from "lucide-react";
 ---
 
 <style>
@@ -15,6 +15,8 @@ import { HandIcon, WavesIcon, GlassWaterIcon, MessageCircleWarningIcon } from "l
   }
   .wavy-group:hover .wavy-hand {
     animation: wavyhand 1s linear alternate-reverse infinite;
+    color: coral;
+    filter: drop-shadow(0 4px 0px #502da1cc);
   }
   @keyframes wavy {
     from {
@@ -30,10 +32,6 @@ import { HandIcon, WavesIcon, GlassWaterIcon, MessageCircleWarningIcon } from "l
     animation: wavy 3100ms linear reverse infinite;
     filter: drop-shadow(0 4px 0px #502da1cc);
   }
-  .wavy-group:hover .wavy-hand {
-    color: coral;
-    filter: drop-shadow(0 4px 0px #502da1cc);
-  }
 </style>
 
 <div id="container" class="h-screen w-screen text-pretty subpixel-antialiased
@@ -44,7 +42,7 @@ import { HandIcon, WavesIcon, GlassWaterIcon, MessageCircleWarningIcon } from "l
     <section class="flex flex-col items-center justify-evenly gap-2
         px-0 sm:px-6
         w-full h-full">
-      <div class="rounded-md py-8 px-32 bg-white/20 dark:bg-black/20 shadow-2xl">
+      <div class="frosted-panel">
         <h1
           data-test="title"
           class="title flex flex-col flex-wrap items-center justify-center gap-28
@@ -80,8 +78,7 @@ import { HandIcon, WavesIcon, GlassWaterIcon, MessageCircleWarningIcon } from "l
         h-32 pb-8">
         <ul
           data-test="navigation-links"
-          class="flex flex-row flex-wrap items-center justify-center gap-4
-            text-[#502DA1] dark:text-white rounded-md py-8 px-32 bg-white/20 dark:bg-black/20 shadow-2xl"
+          class="flex flex-row flex-wrap items-center justify-center gap-4 text-[#502DA1] dark:text-white frosted-panel"
         >
           <li class="list-none hover:underline">
             <a href="/experience"> Experience </a>
