@@ -1,82 +1,49 @@
-'use client';
-import { type FC, type InputHTMLAttributes } from 'react';
-import { Star } from 'lucide-react';
+import { For } from "solid-js";
+import { Star } from "lucide-solid";
 
-// export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-export interface InputProps {
-  name: string,
-  size: number,
-  value?: number,
-  disabled?: boolean,
-  onRatingChange?: (size: number) => void,
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
-}
+import type { RatingValue } from "@/components/feedback/model";
 
-export const Rating: FC<InputProps> = ({
-  name,
-  size = 3,
-  value = 0,
-  disabled = false,
-  onRatingChange,
-  onChange,
-}: InputProps) => {
-  const handleClick = (index: number) => {
-    console.warn('handle click', index, { disabled });
-    if (disabled) {
-      return;
-    }
+const RATING_VALUES: readonly RatingValue[] = [1, 2, 3];
 
-    onRatingChange?.(index);
-    onChange?.(
-      {
-        target: {
-          name,
-          value: index,
-          type: 'rating',
-          addEventListener: () => {},
-          removeEventListener: () => {},
-          dispatchEvent: () => false,
-        } as unknown as HTMLInputElement
-      } as React.ChangeEvent<HTMLInputElement>
-    );
-  };
-
-  // right to left, n to 1
-  const stars = [];
-  for (let index = size; index; index -= 1) {
-    stars.push(
-      <Star
-        key={index}
-        onClick={() => handleClick(index)}
-        className={`
-          cursor-pointer
-          peer peer-hover:text-yellow-400 hover:text-yellow-400
-          transition-all duration-100
-          ${index <= value ? 'text-yellow-400' : 'text-gray-600 dark:text-gray-500'}
-          ${disabled ? 'cursor-default opacity-25' : 'cursor-pointer'}
-        `}
-        width="23"
-        height="23"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="currentColor"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      />
-    );
-  }
-
-  return (
-    <div className="text-center">
-      <span
-        className={`
-          flex flex-row-reverse
-          ${Number(size) === Number(value) ? 'animate-pulse' : 'animate-none'}
-        `}
-      >
-        {stars}
-      </span>
-    </div>
-  );
+type RatingProps = {
+  disabled?: boolean;
+  label: string;
+  name: string;
+  onChange: (value: RatingValue) => void;
+  value: RatingValue;
 };
+
+export const Rating = (props: RatingProps) => (
+  <fieldset
+    aria-label={props.label}
+    class="flex gap-1"
+    disabled={props.disabled}
+  >
+    <For each={RATING_VALUES}>
+      {(rating) => (
+        <label class="group cursor-pointer">
+          <input
+            aria-label={`${rating} of 3 stars`}
+            checked={props.value === rating}
+            class="peer sr-only"
+            name={props.name}
+            onChange={() => props.onChange(rating)}
+            type="radio"
+            value={rating}
+          />
+          <Star
+            aria-hidden="true"
+            class={`size-[23px] transition-colors duration-100 group-hover:text-yellow-400 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-black ${
+              rating <= props.value
+                ? "text-yellow-400"
+                : "text-gray-600 dark:text-gray-500"
+            } ${props.disabled ? "cursor-default opacity-25" : ""}`}
+            fill="currentColor"
+          />
+        </label>
+      )}
+    </For>
+  </fieldset>
+);
 
 export default Rating;

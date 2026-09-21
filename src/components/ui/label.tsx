@@ -1,21 +1,18 @@
-import * as LabelPrimitive from "@radix-ui/react-label"
-
-import * as React from "react"
+import { splitProps, type JSX } from "solid-js"
 
 import { cn } from "@/lib/utils"
 
-function Label({
-  className,
-  ...props
-}: React.ComponentProps<typeof LabelPrimitive.Root>) {
+function Label(props: JSX.LabelHTMLAttributes<HTMLLabelElement>) {
+  const [local, others] = splitProps(props, ["class"])
+
   return (
-    <LabelPrimitive.Root
+    <label
       data-slot="label"
-      className={cn(
+      class={cn(
         "text-sm font-heading leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
-        className,
+        local.class,
       )}
-      {...props}
+      {...others}
     />
   )
 }

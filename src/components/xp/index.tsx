@@ -10,7 +10,7 @@ export function Xp() {
   return (
     <Card
       id="xp"
-      className="
+      class="
           text-pretty subpixel-antialiased
           my-6
           relative
@@ -20,7 +20,7 @@ export function Xp() {
         <CardTitle>Experience</CardTitle>
       </CardHeader>
 
-      <CardContent className="prose dark:prose-invert">
+      <CardContent class="prose dark:prose-invert">
         <p>
           Experienced full-stack developer. I’ve successfully managed and
           developed complete platforms and feature-sets from zero to production
@@ -35,27 +35,27 @@ export function Xp() {
 
         <h4>About this site</h4>
         <p>
-          Developed in Astro, with React components. Most of the sections were
+          Developed in Astro, with SolidJS components. Most of the sections were
           fairly easy to implement. The most challenging portion was the
           Feedback form.
-          <h5 className="m-0">Technologies used</h5>
-          <ul className="tracking-tight mt-0">
-            <li className="m-0 p-0">
+          <h5 class="m-0">Technologies used</h5>
+          <ul class="tracking-tight mt-0">
+            <li class="m-0 p-0">
               <a href="https://astro.build/" target="astro.build">
                 Astro
               </a>
             </li>
-            <li className="m-0 p-0">
-              <a href="https://react.dev/" target="react.dev">
-                React
+            <li class="m-0 p-0">
+              <a href="https://www.solidjs.com/" target="solidjs.com">
+                SolidJS
               </a>
             </li>
-            <li className="m-0 p-0">
+            <li class="m-0 p-0">
               <a href="https://tailwindcss.com/" target="tailwindcss.com">
                 Tailwind
               </a>
             </li>
-            <li className="m-0 p-0">
+            <li class="m-0 p-0">
               <a href="https://ui.shadcn.com/" target="_blank">
                 Shadcn
               </a>

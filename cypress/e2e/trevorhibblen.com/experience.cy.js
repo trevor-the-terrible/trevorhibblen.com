@@ -59,4 +59,46 @@ describe('Experience page', () => {
       .should('contain', 'Work History')
       .should('be.visible');
   });
+
+  it('switches between work history entries', () => {
+    cy.get('.xp-page')
+      .find('[role="tablist"]')
+      .first()
+      .find('button[role="tab"]')
+      .contains('Work History')
+      .click();
+
+    cy.get('#history')
+      .find('[role="tablist"]')
+      .find('button[role="tab"]')
+      .contains('MTM')
+      .click();
+
+    cy.get('#mtm').should('be.visible');
+    cy.get('#kpa').should('not.be.visible');
+  });
+
+  it('supports keyboard tab navigation', () => {
+    cy.get('.xp-page')
+      .find('[role="tablist"]')
+      .first()
+      .find('button[role="tab"]')
+      .contains('Experience')
+      .focus()
+      .type('{rightarrow}');
+
+    cy.get('#history').should('be.visible');
+    cy.get('#xp').should('not.be.visible');
+  });
+
+  it('filters skills by category', () => {
+    cy.get('[data-test="xp-skills-table"]')
+      .find('button[role="combobox"], button[aria-haspopup="listbox"]')
+      .click();
+    cy.get('[role="option"]').contains('Database').click();
+
+    cy.get('[data-test="xp-skills-table"] tbody tr').each(($row) => {
+      cy.wrap($row).find('td').eq(1).should('contain', 'Database');
+    });
+  });
 });
