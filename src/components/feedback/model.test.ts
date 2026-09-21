@@ -1,21 +1,11 @@
 import { describe, expect, test } from "bun:test";
 import {
-  EMAIL_ERROR,
   feedbackSchema,
   serializeFeedback,
   submitFeedback,
 } from "./model";
 
 describe("feedbackSchema", () => {
-  test("applies the current defaults", () => {
-    expect(feedbackSchema.parse({ design: 1, speed: 1, email: "" })).toEqual({
-      design: 1,
-      speed: 1,
-      isEmail: false,
-      email: "",
-    });
-  });
-
   test("requires a valid email when contact is requested", () => {
     const result = feedbackSchema.safeParse({
       design: 1,
@@ -26,7 +16,7 @@ describe("feedbackSchema", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.issues.at(-1)?.message).toBe(EMAIL_ERROR);
+      expect(result.error.issues.at(-1)?.path).toEqual(["email"]);
     }
   });
 

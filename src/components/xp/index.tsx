@@ -9,7 +9,6 @@ import {
 export function Xp() {
   return (
     <Card
-      id="xp"
       class="
           text-pretty subpixel-antialiased
           my-6

@@ -55,9 +55,11 @@ export default function WebDevSkillsTable() {
         />
 
         <Select<string>
+          class="w-full sm:w-1/2"
+          disallowEmptySelection
           options={categories}
           value={categoryFilter()}
-          onChange={setCategoryFilter}
+          onChange={(category) => setCategoryFilter(category ?? "All")}
           placeholder="Select category"
           sameWidth
           itemComponent={(props) => (
@@ -75,7 +77,7 @@ export default function WebDevSkillsTable() {
           <Select.HiddenSelect />
           <Select.Trigger
             aria-label="Filter skills by category"
-            class="flex h-10 w-full cursor-pointer items-center justify-between gap-2 rounded-base border-2 border-neutral-900 bg-main px-3 py-2 text-sm font-base text-main-foreground ring-offset-white focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-800 sm:w-1/2"
+            class="flex h-10 w-full cursor-pointer items-center justify-between gap-2 rounded-base border-2 border-neutral-900 bg-main px-3 py-2 text-sm font-base text-main-foreground ring-offset-white focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-800"
           >
             <Select.Value<string>>
               {(state) => state.selectedOption()}
@@ -86,7 +88,7 @@ export default function WebDevSkillsTable() {
           </Select.Trigger>
 
           <Select.Portal>
-            <Select.Content class="relative z-50 max-h-96 min-w-[var(--kb-popper-anchor-width)] overflow-hidden rounded-base border-2 border-neutral-900 bg-main text-main-foreground dark:border-neutral-800">
+            <Select.Content class="relative z-50 max-h-[min(24rem,var(--kb-popper-content-available-height))] min-w-[var(--kb-popper-anchor-width)] overflow-y-auto rounded-base border-2 border-neutral-900 bg-main text-main-foreground dark:border-neutral-800">
               <Select.Listbox class="p-1" />
             </Select.Content>
           </Select.Portal>

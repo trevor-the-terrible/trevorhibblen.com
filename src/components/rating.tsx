@@ -16,7 +16,9 @@ type RatingProps = {
 export const Rating = (props: RatingProps) => (
   <fieldset
     aria-label={props.label}
-    class="flex gap-1"
+    class={`flex gap-1 hover:[&>label:has(~label:hover)>svg]:text-yellow-400 ${
+      props.value === 3 ? "motion-safe:animate-pulse" : ""
+    }`}
     disabled={props.disabled}
   >
     <For each={RATING_VALUES}>
@@ -33,7 +35,7 @@ export const Rating = (props: RatingProps) => (
           />
           <Star
             aria-hidden="true"
-            class={`size-[23px] transition-colors duration-100 group-hover:text-yellow-400 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-black ${
+            class={`size-[23px] transition-colors duration-100 group-hover:text-yellow-400 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-black dark:peer-focus-visible:outline-white ${
               rating <= props.value
                 ? "text-yellow-400"
                 : "text-gray-600 dark:text-gray-500"

@@ -115,6 +115,17 @@ describe('Welcome page', () => {
     cy.get('#email').should('not.exist');
   });
 
+  it('limits feedback notes to 1000 characters', () => {
+    cy.get('[data-test="feedback"]')
+      .find('button')
+      .contains('Feedback')
+      .click();
+
+    cy.get('#feedback')
+      .type('a'.repeat(1001), { delay: 0 })
+      .should('have.value', 'a'.repeat(1000));
+  });
+
   it('closes feedback with Escape', () => {
     cy.get('[data-test="feedback"]')
       .find('button')

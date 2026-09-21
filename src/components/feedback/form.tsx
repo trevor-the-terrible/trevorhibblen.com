@@ -91,10 +91,8 @@ export const FeedbackForm = (props: FeedbackFormProps) => {
         waitForSuccessFeedback(),
       ]);
       setSubmission({ kind: "success" });
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Failed to save feedback 😓";
-      setSubmission({ kind: "error", message });
+    } catch {
+      setSubmission({ kind: "error", message: "Failed to save feedback 😓" });
     }
   };
 
@@ -126,10 +124,9 @@ export const FeedbackForm = (props: FeedbackFormProps) => {
         <Label for="feedback">Notes?&nbsp;&nbsp;✍️</Label>
         <div class="col-span-3">
           <Textarea
-            autofocus
             disabled={isInputDisabled()}
             id="feedback"
-            maxlength={1001}
+            maxlength={1000}
             onBlur={() => setFeedbackTouched(true)}
             onInput={(event) => setForm("feedback", event.currentTarget.value)}
             value={form.feedback}
