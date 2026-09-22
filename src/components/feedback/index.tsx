@@ -1,38 +1,59 @@
- import { useState, useEffect, type SetStateAction } from 'react';
-import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogHeader, DialogFooter } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import FeedbackForm from './form';
+import { Dialog } from "@kobalte/core/dialog";
+import { X } from "lucide-solid";
+import { createSignal } from "solid-js";
 
-export default () => {
-  const [status, setStatus] = useState<'open' | 'closed'>('closed');
+import { buttonVariants } from "@/components/ui/button";
+
+import FeedbackForm from "./form";
+
+export default function Feedback() {
+  const [open, setOpen] = createSignal(false);
+  const [captchaChallengeOpen, setCaptchaChallengeOpen] = createSignal(false);
 
   return (
     <Dialog
-      open={status !== 'closed'}
-      onOpenChange={(open) => setStatus(open ? 'open' : 'closed')}
+      modal={!captchaChallengeOpen()}
+      open={open()}
+      onOpenChange={setOpen}
+      preventScroll
     >
-      <DialogTrigger asChild>
-        <Button variant="default">
-          Feedback
-        </Button>
-      </DialogTrigger>
-
-      <DialogContent
-        className="sm:max-w-[425px] rounded-lg bg-secondary-background"
-      >
-        <DialogHeader>
-          <DialogTitle>
-            Feedback
-          </DialogTitle>
-
-          <DialogDescription className="hidden">
-          </DialogDescription>
-        </DialogHeader>
-
-        <FeedbackForm
-          onDone={() => setStatus('closed')}
+      <Dialog.Trigger class={buttonVariants({ variant: "default" })}>
+        Feedback
+      </Dialog.Trigger>
+      <Dialog.Portal>
+        <Dialog.Overlay
+          class="fixed inset-0 z-50 bg-overlay data-[expanded]:animate-in data-[closed]:animate-out data-[closed]:fade-out-0 data-[expanded]:fade-in-0"
+          data-test="feedback-overlay"
         />
-      </DialogContent>
+        <Dialog.Content
+          class="fixed left-1/2 top-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border-2 border-neutral-900 bg-secondary-background p-6 shadow-lg duration-200 data-[expanded]:animate-in data-[closed]:animate-out data-[closed]:fade-out-0 data-[expanded]:fade-in-0 data-[closed]:zoom-out-95 data-[expanded]:zoom-in-95 sm:max-w-[425px] dark:border-neutral-800"
+          onOpenAutoFocus={(event) => {
+            event.preventDefault();
+            // Let the focus scope register this as its last focused element.
+            queueMicrotask(() => document.getElementById("feedback")?.focus());
+          }}
+          onInteractOutside={(event) => {
+            if (captchaChallengeOpen()) {
+              event.preventDefault();
+            }
+          }}
+        >
+          <div class="flex flex-col gap-2 text-center sm:text-left">
+            <Dialog.Title class="text-lg font-heading">Feedback</Dialog.Title>
+            <Dialog.Description class="sr-only">
+              Rate the site and optionally send notes.
+            </Dialog.Description>
+          </div>
+          <FeedbackForm
+            onCaptchaChallengeChange={setCaptchaChallengeOpen}
+            onDone={() => setOpen(false)}
+          />
+          <Dialog.CloseButton class="absolute right-4 top-4 rounded-base opacity-100 ring-offset-white focus:outline-hidden focus:ring-2 focus:ring-black focus:ring-offset-2 disabled:pointer-events-none">
+            <X class="size-4" />
+            <span class="sr-only">Close</span>
+          </Dialog.CloseButton>
+        </Dialog.Content>
+      </Dialog.Portal>
     </Dialog>
   );
 }

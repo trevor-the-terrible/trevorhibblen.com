@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { Select } from "@kobalte/core/select";
+import { Check, ChevronDown } from "lucide-solid";
+import { For, createMemo, createSignal } from "solid-js";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -9,103 +11,117 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { skills, type Skill } from "./skills";
-import {
   Card,
+  CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
 } from "@/components/ui/card";
+import { skills } from "./skills";
 
-export default WebDevSkillsTable;
+const categories = [
+  "All",
+  ...new Set(skills.map((skill) => skill.category)),
+];
 
-export function WebDevSkillsTable() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("All");
+export default function WebDevSkillsTable() {
+  const [searchTerm, setSearchTerm] = createSignal("");
+  const [categoryFilter, setCategoryFilter] = createSignal("All");
 
-  const categories = ["All", ...new Set(skills.map((skill) => skill.category))];
+  const filteredSkills = createMemo(() => {
+    const query = searchTerm().toLowerCase();
+    const category = categoryFilter();
 
-  const filteredSkills = skills.filter(
-    (skill) =>
-      skill.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (categoryFilter === "All" || skill.category === categoryFilter)
-  );
+    return skills.filter(
+      (skill) =>
+        skill.name.toLowerCase().includes(query) &&
+        (category === "All" || skill.category === category),
+    );
+  });
 
   return (
-    <Card
-      className="
-        app-component
-        relative
-      "
-    >
+    <Card class="app-component relative">
       <CardHeader>
         <CardTitle>Skills</CardTitle>
       </CardHeader>
 
-      <CardContent className="flex flex-col sm:flex-row gap-0 sm:gap-4">
+      <CardContent class="flex flex-col gap-0 sm:flex-row sm:gap-4">
         <Input
           name="hibblen-skills-search"
           type="search"
           placeholder="Filter skills..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="sm:w-1/2 mb-4 dark:bg-black"
+          value={searchTerm()}
+          onInput={(event) => setSearchTerm(event.currentTarget.value)}
+          class="mb-4 dark:bg-black sm:w-1/2"
         />
 
-        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="sm:w-1/2">
-            <SelectValue placeholder="Select category" />
-          </SelectTrigger>
+        <Select<string>
+          class="w-full sm:w-1/2"
+          disallowEmptySelection
+          options={categories}
+          value={categoryFilter()}
+          onChange={(category) => setCategoryFilter(category ?? "All")}
+          placeholder="Select category"
+          sameWidth
+          itemComponent={(props) => (
+            <Select.Item
+              item={props.item}
+              class="relative flex w-full cursor-default select-none items-center gap-2 rounded-base border-2 border-transparent py-1.5 pr-8 pl-2 text-sm font-base outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:border-neutral-900 dark:data-[highlighted]:border-neutral-800"
+            >
+              <Select.ItemIndicator class="absolute right-2 flex size-3.5 items-center justify-center">
+                <Check class="size-4" />
+              </Select.ItemIndicator>
+              <Select.ItemLabel>{props.item.rawValue}</Select.ItemLabel>
+            </Select.Item>
+          )}
+        >
+          <Select.HiddenSelect />
+          <Select.Trigger
+            aria-label="Filter skills by category"
+            class="flex h-10 w-full cursor-pointer items-center justify-between gap-2 rounded-base border-2 border-neutral-900 bg-main px-3 py-2 text-sm font-base text-main-foreground ring-offset-white focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-800"
+          >
+            <Select.Value<string>>
+              {(state) => state.selectedOption()}
+            </Select.Value>
+            <Select.Icon>
+              <ChevronDown class="size-4" />
+            </Select.Icon>
+          </Select.Trigger>
 
-          <SelectContent>
-            {categories.map((category) => (
-              <SelectItem key={category} value={category}>
-                {category}
-              </SelectItem>
-            ))}
-          </SelectContent>
+          <Select.Portal>
+            <Select.Content class="relative z-50 max-h-[min(24rem,var(--kb-popper-content-available-height))] min-w-[var(--kb-popper-anchor-width)] overflow-y-auto rounded-base border-2 border-neutral-900 bg-main text-main-foreground dark:border-neutral-800">
+              <Select.Listbox class="p-1" />
+            </Select.Content>
+          </Select.Portal>
         </Select>
       </CardContent>
 
-      <CardContent className="">
-        <Table className='table table-fixed'>
+      <CardContent>
+        <Table class="table table-fixed">
           <TableHeader>
             <TableRow>
-              <TableHead className="font-bold">Skill</TableHead>
-              <TableHead className="font-bold hidden md:table-column">
+              <TableHead class="font-bold">Skill</TableHead>
+              <TableHead class="hidden font-bold md:table-cell">
                 Category
               </TableHead>
-              <TableHead className="font-bold">Level</TableHead>
+              <TableHead class="font-bold">Level</TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
-            {filteredSkills.map((skill) => (
-              <TableRow key={skill.id}>
-                <TableCell>
-                  {skill.name}
-                  {skill.detail && (
-                    <span
-                      className="
-                      "
-                    >
-                      ({skill.detail})
-                    </span>
-                  )}
-                </TableCell>
-                <TableCell className="hidden md:table-column">
-                  {skill.category}
-                </TableCell>
-                <TableCell>{skill.level}</TableCell>
-              </TableRow>
-            ))}
+            <For each={filteredSkills()}>
+              {(skill) => (
+                <TableRow>
+                  <TableCell>
+                    {skill.name}
+                    {skill.detail ? <span>({skill.detail})</span> : null}
+                  </TableCell>
+                  <TableCell class="hidden md:table-cell">
+                    {skill.category}
+                  </TableCell>
+                  <TableCell>{skill.level}</TableCell>
+                </TableRow>
+              )}
+            </For>
           </TableBody>
         </Table>
       </CardContent>

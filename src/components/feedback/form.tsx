@@ -1,309 +1,234 @@
-'use client';
+import { createMemo, createSignal, Show } from "solid-js";
+import { createStore } from "solid-js/store";
+import { Loader2 } from "lucide-solid";
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Loader2, Star } from 'lucide-react';
-import { Checkbox } from '@/components/ui/checkbox';
-import Rating from '@/components/rating';
-import { Separator } from '@/components/ui/separator';
-import { useState, useEffect } from 'react';
-import { useForm, type SubmitHandler } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import signString from './sign-string';
-import { Captcha } from './recaptcha';
+import Rating from "@/components/rating";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 
-const feedbackSchema = z.object({
-  feedback: z.string().max(1000).optional(),
-  speed: z.number().min(1).max(3),
-  design: z.number().min(1).max(3),
-  isEmail: z.boolean().default(false),
-  email: z.string()
-    .email('Please enter your email. Or uncheck "Want to reach out?"')
-    .optional()
-    // shouldn't optional, handle this already?
-    .or(z.literal('')),
-}).refine((data) => {
-  if (data.isEmail) {
-    return z.string().email().safeParse(data.email).success;
-  }
-  return true;
-}, {
-  message: 'Please enter your email. Or uncheck "Want to reach out?"',
-  path: ['email'],
-});
+import { Captcha } from "./recaptcha";
+import {
+  feedbackSchema,
+  submitFeedback,
+  type Feedback,
+  type RatingValue,
+  type SubmissionState,
+} from "./model";
 
-export type Feedback = z.infer<typeof feedbackSchema>;
-
-export type ChangeEventProxy = {
-  target: {
-    name: string;
-    value: string|boolean;
-  };
+type FeedbackDraft = {
+  design: RatingValue;
+  email: string;
+  feedback: string;
+  isEmail: boolean;
+  speed: RatingValue;
 };
 
-export const FeedbackForm = ({ onDone }: { onDone: () => void }) => {
-  const { handleSubmit, register, formState, setValue, ...form } = useForm<Feedback>({
-    defaultValues: {
-      design: 1,
-      speed: 1,
-      isEmail: false,
-      email: '',
-    },
-    mode: 'onBlur',
-    resolver: zodResolver(feedbackSchema),
+type FeedbackFormProps = {
+  onCaptchaChallengeChange: (open: boolean) => void;
+  onDone: () => void;
+};
+
+const waitForSuccessFeedback = () =>
+  new Promise<void>((resolve) => setTimeout(resolve, 1500));
+
+export const FeedbackForm = (props: FeedbackFormProps) => {
+  const [form, setForm] = createStore<FeedbackDraft>({
+    design: 1,
+    email: "",
+    feedback: "",
+    isEmail: false,
+    speed: 1,
   });
-  const isInputDisabled = formState.isSubmitting || formState.isSubmitSuccessful;
-  const [validCaptcha, setValidCaptcha] = useState(false);
+  const [captchaToken, setCaptchaToken] = createSignal<string | null>(null);
+  const [emailTouched, setEmailTouched] = createSignal(false);
+  const [feedbackTouched, setFeedbackTouched] = createSignal(false);
+  const [submitted, setSubmitted] = createSignal(false);
+  const [submission, setSubmission] = createSignal<SubmissionState>({
+    kind: "editing",
+  });
 
-  const onHandleSubmit: SubmitHandler<Feedback> = async (data) => {
-    await Promise.all([
-      retry(() => saveFeedback(data)),
-      (
-        new Promise((resolve) => {
-          setTimeout(() => {
-            resolve('done');
-          }, 1500);
-        })
-      ),
-    ]);
+  const validation = createMemo(() => feedbackSchema.safeParse(form));
+  const isInputDisabled = () =>
+    submission().kind === "submitting" || submission().kind === "success";
+  const submissionError = () => {
+    const state = submission();
+    return state.kind === "error" ? state.message : undefined;
   };
 
-  // these need to be watched to update the form state
-  const design = form.watch('design');
-  const speed = form.watch('speed');
-  const isEmail = form.watch('isEmail');
+  const fieldError = (field: keyof Feedback) => {
+    const result = validation();
+    if (result.success) {
+      return undefined;
+    }
 
-  // required for design and speed to be updated
-  const onFormChange = (e: ChangeEventProxy) => {
-    setValue(e.target.name as keyof Feedback, e.target.value);
+    return result.error.issues.find((issue) => issue.path[0] === field)?.message;
   };
 
-  // Clear email field if isEmail is unchecked
-  useEffect(() => {
-    setValue('email', '');
-    form.trigger('email');
-  }, [isEmail]);
+  const changeContactPreference = (isEmail: boolean) => {
+    setForm("isEmail", isEmail);
+    if (!isEmail) {
+      setForm("email", "");
+      setEmailTouched(false);
+    }
+  };
+
+  const handleSubmit = async (event: SubmitEvent) => {
+    event.preventDefault();
+    setSubmitted(true);
+
+    const result = validation();
+    if (!result.success || !captchaToken()) {
+      return;
+    }
+
+    setSubmission({ kind: "submitting" });
+    try {
+      await Promise.all([
+        submitFeedback(result.data),
+        waitForSuccessFeedback(),
+      ]);
+      setSubmission({ kind: "success" });
+    } catch {
+      setSubmission({ kind: "error", message: "Failed to save feedback 😓" });
+    }
+  };
 
   return (
-    <form
-        className="grid gap-4 py-4 relative"
-        onSubmit={handleSubmit(onHandleSubmit)}
-      >
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="design">
-            Design
-          </Label>
+    <form class="relative grid gap-4 py-4" onSubmit={handleSubmit}>
+      <div class="grid grid-cols-4 items-center gap-4">
+        <Label>Design</Label>
+        <Rating
+          disabled={isInputDisabled()}
+          label="Design rating"
+          name="design"
+          onChange={(value) => setForm("design", value)}
+          value={form.design}
+        />
+      </div>
 
-          <Rating
-            {...register('design', {
-              disabled: isInputDisabled,
-              valueAsNumber: true,
-              onChange: onFormChange,
-              value: design,
-            })}
-            size={3}
-            value={design}
-          />
-        </div>
+      <div class="grid grid-cols-4 items-center gap-4">
+        <Label>Site performance</Label>
+        <Rating
+          disabled={isInputDisabled()}
+          label="Site performance rating"
+          name="speed"
+          onChange={(value) => setForm("speed", value)}
+          value={form.speed}
+        />
+      </div>
 
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="speed">
-            Site performance
-          </Label>
-
-          <Rating
-            {...register('speed', {
-              disabled: isInputDisabled,
-              valueAsNumber: true,
-              onChange: onFormChange,
-              value: speed,
-            })}
-            size={3}
-            value={speed}
-          />
-        </div>
-
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="feedback">
-            Notes?&nbsp;&nbsp;✍️
-          </Label>
-
-          <div className="col-span-3">
+      <div class="grid grid-cols-4 items-center gap-4">
+        <Label for="feedback">Notes?&nbsp;&nbsp;✍️</Label>
+        <div class="col-span-3">
           <Textarea
-              {...register('feedback', {
-                disabled: isInputDisabled,
-              })}
-              autoFocus
-              id="feedback"
-              defaultValue=""
-            />
-
-            {formState.errors.feedback?.message && (
-              <p className='text-sm italic text-red-800 dark:text-red-400 mt-2'>
-                {formState.errors.feedback?.message}
+            disabled={isInputDisabled()}
+            id="feedback"
+            maxlength={1000}
+            onBlur={() => setFeedbackTouched(true)}
+            onInput={(event) => setForm("feedback", event.currentTarget.value)}
+            value={form.feedback}
+          />
+          <Show when={(feedbackTouched() || submitted()) && fieldError("feedback")}>
+            {(message) => (
+              <p class="mt-2 text-sm italic text-red-800 dark:text-red-400">
+                {message()}
               </p>
             )}
-          </div>
+          </Show>
         </div>
+      </div>
 
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="isemail" className="w-full cursor-pointer">
-            Want to reach out?
+      <div class="grid grid-cols-4 items-center gap-4">
+        <Label class="w-full cursor-pointer" for="isemail">
+          Want to reach out?
+        </Label>
+        <input
+          checked={form.isEmail}
+          class="size-4 cursor-pointer accent-black disabled:cursor-not-allowed disabled:opacity-50"
+          disabled={isInputDisabled()}
+          id="isemail"
+          onChange={(event) => changeContactPreference(event.currentTarget.checked)}
+          type="checkbox"
+        />
+      </div>
+
+      <Show when={form.isEmail}>
+        <div class="grid grid-cols-4 items-center gap-4">
+          <Label class="text-right" for="email">
+            Email
           </Label>
+          <Input
+            class="col-span-3"
+            disabled={isInputDisabled()}
+            id="email"
+            onBlur={() => setEmailTouched(true)}
+            onInput={(event) => setForm("email", event.currentTarget.value)}
+            placeholder="me@mailinator.com"
+            type="email"
+            value={form.email}
+          />
+          <p>&nbsp;</p>
+          <p class="col-span-3 block p-0 text-sm italic text-red-800 dark:text-red-400">
+            <Show when={(emailTouched() || submitted()) && fieldError("email")}>
+              {(message) => message()}
+            </Show>
+          </p>
+        </div>
+      </Show>
 
-          <Checkbox
-            id="isemail"
-            checked={isEmail}
-            onCheckedChange={(checked) => setValue('isEmail', !!checked)}
-            {...register('isEmail', {
-              disabled: isInputDisabled,
-            })}
+      <Show when={submission().kind === "success"}>
+        <div>
+          <p class="block rounded bg-green-100 p-4 text-center font-bold text-green-800 subpixel-antialiased">
+            Thank you 🎉
+          </p>
+          <Button class="mt-4 w-full" onClick={props.onDone} type="button">
+            Close
+          </Button>
+        </div>
+      </Show>
+
+      <Show when={submission().kind !== "success"}>
+        <div class="flex w-full flex-col gap-2">
+          <Separator class="my-4" />
+          <Button
+            class="w-full"
+            disabled={!validation().success || isInputDisabled() || !captchaToken()}
+            type="submit"
+          >
+            <Show when={submission().kind === "submitting"}>
+              <Loader2 class="mr-2 size-4 animate-spin" />
+            </Show>
+            {submission().kind === "submitting" ? "Sending..." : "Send"}
+          </Button>
+          <Button
+            class="w-full"
+            disabled={submission().kind === "submitting"}
+            onClick={props.onDone}
+            type="button"
+            variant="neutral"
+          >
+            Nevermind
+          </Button>
+          <Show when={submissionError()}>
+            {(message) => (
+              <div class="error flex flex-col gap-2 rounded-md bg-red-100 p-2 text-red-800">
+                <p>{message()}</p>
+              </div>
+            )}
+          </Show>
+        </div>
+        <div class="flex w-full justify-center">
+          <Captcha
+            onChallengeChange={props.onCaptchaChallengeChange}
+            onChange={setCaptchaToken}
           />
         </div>
-
-        {isEmail && (
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="email" className="text-right">
-              Email
-            </Label>
-
-            <Input
-              {...register('email', {
-                disabled: isInputDisabled,
-              })}
-
-              id="email"
-              type="email"
-              defaultValue=""
-              className="col-span-3"
-              placeholder="me@mailinator.com"
-            />
-
-            <p>&nbsp;</p>
-            <p className='
-              block col-span-3 p-0
-              text-sm italic
-              text-red-800 dark:text-red-400
-            '>
-              {formState.errors.email?.message}
-            </p>
-          </div>
-        )}
-
-        {formState.isSubmitSuccessful && (
-          <div>
-            <p
-              className="
-                block
-                rounded
-                p-4
-                bg-green-100
-                font-bold
-                text-green-800
-                subpixel-antialiased
-                text-center
-              "
-            >
-              Thank you 🎉
-            </p>
-
-            <Button
-              variant="default"
-              onClick={onDone}
-              type="button"
-              className="w-full mt-4"
-            >
-              Close
-            </Button>
-          </div>
-        )}
-
-        {!formState.isSubmitSuccessful && (
-          <div className="flex flex-col gap-2 w-full">
-          <Separator className='my-4' />
-
-            <Button
-              type="submit"
-              disabled={
-                !formState.isValid
-                || isInputDisabled
-                || !validCaptcha
-              }
-              className='w-full'
-            >
-              {formState.isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-              {formState.isSubmitting ? 'Sending...' : 'Send'}
-            </Button>
-
-            <Button
-              variant="neutral"
-              onClick={onDone}
-              type="button"
-              className="w-full"
-              disabled={formState.isSubmitting}
-            >
-              Nevermind
-            </Button>
-
-            {formState.isSubmitted && !formState.isSubmitSuccessful && (
-                <div className='flex flex-col gap-2 error bg-red-100 text-red-800 p-2 rounded-md'>
-                  <p>
-                    Failed to save feedback 😓
-                  </p>
-                </div>
-              )}
-          </div>
-        )}
-
-        {/* recaptcha */
-        !formState.isSubmitSuccessful && (
-          <div className='w-full flex justify-center'>
-            <Captcha
-              onSuccess={() => setValidCaptcha(true)}
-            />
-          </div>
-        )}
+      </Show>
     </form>
   );
-}
+};
 
 export default FeedbackForm;
-
-const saveFeedback = async (feedback: Feedback) => {
-  let content = JSON.parse(JSON.stringify(feedback));
-  delete content.isEmail;
-  content = JSON.stringify(content, Object.keys(content).sort());
-
-  const signature = await signString(content);
-  const url = 'https://zxzffkjcu0.execute-api.us-east-1.amazonaws.com/save-feedback';
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-signature": signature,
-    },
-    body: content,
-  });
-
-  if (!res.ok && res.status !== 304) {
-    throw new Error('Failed to save feedback 😓');
-  }
-};
-
-const retry = async (fn: () => Promise<any>, tries = 3, error?: any) => {
-  console.log('retries remaining :>> ', tries);
-  if (!tries) {
-    throw error;
-  }
-
-  try {
-    await fn();
-  } catch (error) {
-    console.warn('error :>> ', error);
-    await retry(fn, tries - 1, error);
-  }
-};

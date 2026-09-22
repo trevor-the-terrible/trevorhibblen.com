@@ -17,17 +17,16 @@ const addFonts = () => {
 };
 
 (async () => {
-  addFonts();
-
-  // wait for fonts to be ready
-  await document.fonts.ready;
-
-  // main[data-fout-font]
   const fontFace = document.getElementsByTagName("main")[0]?.dataset?.foutFont;
   if (!fontFace) {
     setTimeout(showMain, 500);
     return;
   }
+
+  addFonts();
+
+  // wait for fonts to be ready
+  await document.fonts.ready;
 
   let cap = 100;
   while (cap && !hasFont(fontFace)) {

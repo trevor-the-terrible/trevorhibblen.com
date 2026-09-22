@@ -1,7 +1,7 @@
 ---
 import BgImg from "./bg-img.astro";
 import Feedback from "@/components/feedback";
-import { HandIcon, WavesIcon } from "lucide-react";
+import { HandIcon, WavesIcon } from "lucide-solid";
 ---
 
 <style>
@@ -57,8 +57,8 @@ import { HandIcon, WavesIcon } from "lucide-react";
 
           <span class="group relative flex flex-row items-center justify-center gap-4
               wavy-group">
-            <HandIcon className="inline-block w-20 h-20 wavy-hand transition-all duration-700" />
-            <WavesIcon className="inline-block w-20 h-20 wavy transition-all duration-700" />
+            <HandIcon class="inline-block w-20 h-20 wavy-hand transition-all duration-700" />
+            <WavesIcon class="inline-block w-20 h-20 wavy transition-all duration-700" />
             <div
               class="absolute -top-12 left-1/2 transform -translate-x-1/2
               italic text-sm font-light
@@ -103,7 +103,7 @@ import { HandIcon, WavesIcon } from "lucide-react";
         </ul>
 
         <div data-test="feedback" class="hidden sm:flex!">
-          <Feedback client:idle />
+          <Feedback client:load />
         </div>
       </section>
     </section>

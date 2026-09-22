@@ -4,7 +4,7 @@ import Layout from "../layouts/Layout.astro";
 import WebDevSkillsTable from "@/components/web-dev-skills-table";
 import TabWrapper from "@/components/tab-wrapper";
 import { Xp } from "@/components/xp";
-import { DownloadIcon, Home } from "lucide-react";
+import { DownloadIcon, Home } from "lucide-solid";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -95,14 +95,14 @@ const workHistory = await getCollection("workhistory");
           workHistory.map((entry) => (
             <Card
               id={entry.data.slug}
-              className={`
+              class={`
                 tab-content-wh
                 ${entry.data.slug !== "kpa" ? "hidden" : ""}
                 mt-2
                 relative z-10
               `}
             >
-              <CardHeader className="mb-4">
+              <CardHeader class="mb-4">
                 <CardTitle>{entry.data.title}</CardTitle>
                 <CardDescription>{entry.data.location}</CardDescription>
                 <CardDescription>
@@ -112,7 +112,7 @@ const workHistory = await getCollection("workhistory");
               </CardHeader>
 
               <CardContent
-                className="prose dark:prose-invert"
+                class="prose dark:prose-invert"
                 set:html={entry?.rendered?.html || "-"}
               />
             </Card>
