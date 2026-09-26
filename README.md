@@ -1,40 +1,31 @@
 # trevorhibblen.com
 
-## Install & Run local
-> npm/pnpm can install and run the project.
+A single static page. Everything served lives in `site/`; there is no build step.
+
+## Run local
 ```sh
-npm ci; # pnpm run ci
-npm run dev; # pnpm dev
+python3 -m http.server -d site 4321
 ```
 
-> [Bun](https://bun.com/) is required to run tests and all other scripts
-
-## Tests
+## Title font
+`site/fonts/title.woff2` is [Inter](https://github.com/rsms/inter) pinned to weight 400 and subset to the characters in the `<h1>`. After changing that text, regenerate it from `Inter-VariableFont_opsz,wght.ttf` (requires `pip install fonttools brotli`):
 ```sh
-bun test;
-bun cy:test;
-```
-
-## Preview build
-> Preview production version of site
-```sh
-bun preview;
+fonttools varLib.instancer Inter-VariableFont_opsz,wght.ttf wght=400 -o inter-400.ttf
+pyftsubset inter-400.ttf --text='<all h1 text>' --layout-features='*' --flavor=woff2 --output-file=site/fonts/title.woff2
 ```
 
 ## Deploy
-> Builds the production version, uploads it to S3 and clears the CloudFront cache
+Pushing to `main` runs `.github/workflows/default-release.yml`, which syncs `site/` to S3 and invalidates the CloudFront cache.
 
-Required environment variables
+Required secrets
   - SITE_BUCKET
   - SITE_CLOUDFRONT_DISTRIBUTION_ID
+  - AWS_REGION
   - AWS_ACCESS_KEY_ID
   - AWS_SECRET_ACCESS_KEY
 
-```bash
-bun pub;
+Manual deploy with the same variables exported:
+```sh
+aws s3 sync site "s3://$SITE_BUCKET"
+aws cloudfront create-invalidation --distribution-id "$SITE_CLOUDFRONT_DISTRIBUTION_ID" --paths "/*"
 ```
-
-## TODO
-- [ ] Automate deployment via github
-- [ ] Add projects portfolio
-- [ ] Add a 404 page
