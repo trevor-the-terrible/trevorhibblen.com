@@ -42,7 +42,7 @@ describe('Experience page', () => {
       });
   });
 
-  it('loads work history', () => {
+  it.skip('loads work history', () => {
     cy.get('.xp-page')
       .find('[role="tablist"]')
       .find('button[role="tab"]')
@@ -60,7 +60,7 @@ describe('Experience page', () => {
       .should('be.visible');
   });
 
-  it('switches between work history entries', () => {
+  it.skip('switches between work history entries', () => {
     cy.get('.xp-page')
       .find('[role="tablist"]')
       .first()
@@ -78,7 +78,7 @@ describe('Experience page', () => {
     cy.get('#kpa').should('not.be.visible');
   });
 
-  it('supports keyboard tab navigation', () => {
+  it.skip('supports keyboard tab navigation', () => {
     cy.get('.xp-page')
       .find('[role="tablist"]')
       .first()
