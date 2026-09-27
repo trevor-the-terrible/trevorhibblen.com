@@ -1,5 +1,6 @@
-# python virtualenv
+# python virtualenv and local interpreter pin
 .venv/
+.pdm-python
 
 # environment variables
 .env
