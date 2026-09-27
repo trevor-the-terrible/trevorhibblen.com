@@ -1,40 +1,41 @@
 # trevorhibblen.com
 
-## Install & Run local
-> npm/pnpm can install and run the project.
+A single static page. Everything served lives in `site/`; there is no build step.
+
+## Run local
+Requires [PDM](https://pdm-project.org/). `pdm dev` serves `site/` on http://localhost:4321 and reloads the browser when a file in `site/` changes.
 ```sh
-npm ci; # pnpm run ci
-npm run dev; # pnpm dev
+pdm install
+pdm dev
 ```
 
-> [Bun](https://bun.com/) is required to run tests and all other scripts
-
-## Tests
+## Title font
+`site/fonts/title.woff2` is [Inter](https://github.com/rsms/inter) pinned to weight 400 and subset to the characters in the `<h1>`. After changing that text, regenerate it from `Inter-VariableFont_opsz,wght.ttf` (requires `pip install fonttools brotli`):
 ```sh
-bun test;
-bun cy:test;
+fonttools varLib.instancer Inter-VariableFont_opsz,wght.ttf wght=400 -o inter-400.ttf
+pyftsubset inter-400.ttf --text='<all h1 text>' --layout-features='*' --flavor=woff2 --output-file=site/fonts/title.woff2
 ```
 
-## Preview build
-> Preview production version of site
+## Backgrounds
+The page only ever shows a small, heavily blurred region of each background animation, so `site/` keeps just that region. The sources are `site/light.gif` and `site/dark.gif` in commit `3d56bf4`. Regenerate with ffmpeg (built with libaom and libwebp):
 ```sh
-bun preview;
+ffmpeg -i light.gif -vf "crop=256:256,scale=128:128:flags=area,format=rgb24,setpts=N/(15*TB)" -r 15 -pix_fmt yuv444p -c:v libaom-av1 -crf 48 -b:v 0 -cpu-used 1 -g 999 site/light.avif
+ffmpeg -i dark.gif -vf crop=64:48:72:88 -c:v libwebp_anim -lossless 1 -loop 0 site/dark.webp
 ```
+The crop sizes and offsets are tied to the `.background.light` and `.background.dark` rules in `site/index.html`; change them together.
 
 ## Deploy
-> Builds the production version, uploads it to S3 and clears the CloudFront cache
+Pushing to `main` runs `.github/workflows/default-release.yml`, which syncs `site/` to S3 and invalidates the CloudFront cache.
 
-Required environment variables
+Required secrets
   - SITE_BUCKET
   - SITE_CLOUDFRONT_DISTRIBUTION_ID
+  - AWS_REGION
   - AWS_ACCESS_KEY_ID
   - AWS_SECRET_ACCESS_KEY
 
-```bash
-bun pub;
+Manual deploy with the same variables exported:
+```sh
+aws s3 sync site "s3://$SITE_BUCKET"
+aws cloudfront create-invalidation --distribution-id "$SITE_CLOUDFRONT_DISTRIBUTION_ID" --paths "/*"
 ```
-
-## TODO
-- [ ] Automate deployment via github
-- [ ] Add projects portfolio
-- [ ] Add a 404 page

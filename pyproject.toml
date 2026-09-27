@@ -1,0 +1,14 @@
+[project]
+name = "trevorhibblen-com"
+version = "0.0.0"
+requires-python = ">=3.10"
+dependencies = []
+
+[dependency-groups]
+dev = ["livereload==2.7.1"]
+
+[tool.pdm]
+distribution = false
+
+[tool.pdm.scripts]
+dev = "livereload site -p 4321"
