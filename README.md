@@ -3,8 +3,11 @@
 A single static page. Everything served lives in `site/`; there is no build step.
 
 ## Run local
+Serves `site/` on http://localhost:4321 and reloads the browser when a file in `site/` changes.
 ```sh
-python3 -m http.server -d site 4321
+python3 -m venv .venv
+.venv/bin/pip install -r requirements-dev.txt
+.venv/bin/livereload site -p 4321
 ```
 
 ## Title font
