@@ -19,10 +19,11 @@ pyftsubset inter-400.ttf --text='<all h1 text>' --layout-features='*' --flavor=w
 ## Backgrounds
 The page only ever shows a small, heavily blurred region of each background animation, so `site/` keeps just that region. The sources are `site/light.gif` and `site/dark.gif` in commit `3d56bf4`. Regenerate with ffmpeg (built with libaom and libwebp):
 ```sh
-ffmpeg -i light.gif -vf "crop=256:256,scale=128:128:flags=area,format=rgb24,setpts=N/(15*TB)" -r 15 -pix_fmt yuv444p -c:v libaom-av1 -crf 48 -b:v 0 -cpu-used 1 -g 999 site/light.avif
-ffmpeg -i dark.gif -vf crop=64:48:72:88 -c:v libwebp_anim -lossless 1 -loop 0 site/dark.webp
+ffmpeg -i light.gif -vf "crop=256:256,scale=128:128:flags=area,format=rgb24,setpts=N/(7.5*TB)" -r 7.5 -pix_fmt yuv444p -c:v libaom-av1 -crf 48 -b:v 0 -cpu-used 1 -g 999 site/light.avif
+ffmpeg -i dark.gif -vf "crop=64:48:72:88,setpts=2*PTS" -fps_mode passthrough -c:v libwebp_anim -lossless 1 -loop 0 site/dark.webp
 ```
 The crop sizes and offsets are tied to the `.background.light` and `.background.dark` rules in `site/index.html`; change them together.
+Both animations play at half their original speed.
 
 ## Deploy
 Pushing to `main` runs `.github/workflows/default-release.yml`, which syncs `site/` to S3 and invalidates the CloudFront cache.
